@@ -1,27 +1,31 @@
 class Category:
-
-    ledger = []
-    categories = []
    
-    def __init__(self, description):
-        self.description = description
-
-        if description not in self.categories:
-            self.categories.append(description)
-
-        print('categories ', self.categories)
-    
-    def deposit(self, amount, description=""):
-        print('ledger: ', self.ledger)
-        print('Depositing: ', amount)
+    def __init__(self, name):
+        self.name = name
         self.ledger = []
-        self.ledger.append({"amount": amount, "description": description})
 
+    def __str__(self):
+        title = f'{self.name:*^30}\n'
+        items = ""
+        total = 0
+        for item in self.ledger:
+           items += f"{item['description'][0:23]:23}" + f"{item['amount']:>7.2f}" + '\n'
+
+           total += item['amount']
+        
+        output = title + items + "Total: " + str(total)
+        print(output)
+        return output 
+   
+    def deposit(self, amount, description=""):
+        print('Depositing: ', amount)
+        self.ledger.append({"amount": amount, "description": description})
+        
     def withdraw(self, amount, description=""):
         print('Withdrawing: ', amount)
         balanceCheck = self.check_funds(amount)
         if balanceCheck == True:
-            self.ledger.append({"amount": amount*-1, "description": description})
+            self.ledger.append({"amount": amount*-1, "description": description})  
             return True
         else:
             return False
@@ -33,21 +37,16 @@ class Category:
             
         return (round(total,2))
 
-    def transfer(self, amount, destination):
+    def transfer(self, amount, category):
 
         balanceCheck = self.check_funds(amount)
         if balanceCheck == True:
-        # print(destination.description)
-            self.ledger.append({"amount": amount*-1, "description":   "Transfer to " + destination.description})
-            destination.ledger = []
-            destination.ledger.append({"amount": amount, "description": "Transfer from " + self.description})
+            self.ledger.append({"amount": amount*-1, "description":   "Transfer to " + category.name})
+            category.ledger.append({"amount": amount, "description": "Transfer from " + self.name})
             return True
         else:
             return False
-                
-        #print(self.ledger)
-        #print(destination.ledger)
-    
+
     def check_funds(self, amount):
         currentBalance = self.get_balance()
         print('currentBal: ', currentBalance)
@@ -55,11 +54,10 @@ class Category:
             return False
         else:
             return True
-            
 
+        
 def create_spend_chart(categories):
 
     print('categories for chart', Category.categories)
        
 
-    return
